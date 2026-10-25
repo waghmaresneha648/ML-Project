@@ -1,0 +1,20 @@
+{
+    "selected_model": "Linear Regression",
+    "test_mae": 2.2946,
+    "test_rmse": 2.6029,
+    "test_r2": 0.9958,
+    "training_rows": 8,
+    "test_rows": 2,
+    "total_valid_rows": 10,
+    "features": [
+        "area",
+        "bedrooms"
+    ],
+    "target": "price",
+    "cross_validation_mae": {
+        "Linear Regression": 3.3609,
+        "Decision Tree": 16.6,
+        "Random Forest": 12.446
+    },
+    "note": "Evaluation uses a small dataset. Metrics are preliminary and may not reflect real-world performance."
+}
