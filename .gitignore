@@ -1,3 +1,25 @@
-backend/node_modules/
+
+# Node.js dependencies
 node_modules/
+backend/node_modules/
+
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+
+# Generated model files
+# Keep trained model artifacts local unless intentionally versioned
+ml-service/general_models/
+
+# Local development files
+.DS_Store
+Thumbs.db
