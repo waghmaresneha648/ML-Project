@@ -6,6 +6,7 @@ const pool = require("./config/database");
 const datasetRoutes = require("./routes/datasetRoutes");
 const predictionRoutes = require("./routes/predictionRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const mlRoutes = require("./routes/mlRoutes");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
 app.use("/api/datasets", datasetRoutes);
 app.use("/api", predictionRoutes);
 app.use("/api", uploadRoutes);
+app.use("/api/ml", mlRoutes);
 app.get("/test-db", async (req, res) => {
     try {
         const result = await pool.query("SELECT NOW()");
