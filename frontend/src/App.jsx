@@ -2,13 +2,9 @@ import { useEffect, useState } from "react";
 
 import "./App.css";
 
-
-
 function App() {
 
   const [datasets, setDatasets] = useState([]);
-
-
 
   // House-price prediction states
 
@@ -22,8 +18,6 @@ function App() {
 
   const [predictionError, setPredictionError] = useState("");
 
-
-
   // CSV upload and analysis states
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -33,8 +27,6 @@ function App() {
   const [uploadLoading, setUploadLoading] = useState(false);
 
   const [uploadError, setUploadError] = useState("");
-
-
 
   // General ML training states
 
@@ -51,8 +43,6 @@ function App() {
   const [mlError, setMlError] = useState("");
 
   const [selectedModels, setSelectedModels] = useState([]);
-
-
 
   useEffect(() => {
 
@@ -84,8 +74,6 @@ function App() {
 
   }, []);
 
-
-
   const handlePrediction = async (event) => {
 
     event.preventDefault();
@@ -93,8 +81,6 @@ function App() {
     setPrediction(null);
 
     setPredictionError("");
-
-
 
     if (
 
@@ -118,11 +104,7 @@ function App() {
 
     }
 
-
-
     setLoading(true);
-
-
 
     try {
 
@@ -146,19 +128,13 @@ function App() {
 
       });
 
-
-
       const data = await response.json();
-
-
 
       if (!response.ok) {
 
         throw new Error(data.message || "Prediction failed.");
 
       }
-
-
 
       setPrediction(data);
 
@@ -176,8 +152,6 @@ function App() {
 
   };
 
-
-
   const handleFileUpload = async (event) => {
 
     event.preventDefault();
@@ -185,8 +159,6 @@ function App() {
     setDatasetAnalysis(null);
 
     setUploadError("");
-
-
 
     if (!selectedFile) {
 
@@ -196,8 +168,6 @@ function App() {
 
     }
 
-
-
     if (!selectedFile.name.toLowerCase().endsWith(".csv")) {
 
       setUploadError("Please select a file with the .csv extension.");
@@ -206,19 +176,13 @@ function App() {
 
     }
 
-
-
     setUploadLoading(true);
-
-
 
     try {
 
       const formData = new FormData();
 
       formData.append("file", selectedFile);
-
-
 
       const response = await fetch("http://localhost:5000/api/upload", {
 
@@ -228,19 +192,13 @@ function App() {
 
       });
 
-
-
       const data = await response.json();
-
-
 
       if (!response.ok) {
 
         throw new Error(data.message || "Upload failed.");
 
       }
-
-
 
       setDatasetAnalysis(data);
 
@@ -258,101 +216,171 @@ function App() {
 
   };
 
-
-
   const handleFileSelection = (event) => {
+
     const file = event.target.files?.[0] || null;
+
     setSelectedFile(file);
+
     setDatasetAnalysis(null);
+
     setUploadError("");
+
     setMlRecommendations(null);
+
     setMlTrainingResults(null);
+
     setMlError("");
+
     setSelectedModels([]);
+
   };
 
   // Ask the backend to recommend suitable models for the uploaded CSV.
+
   const handleMLRecommendation = async () => {
+
     if (!selectedFile) {
+
       setMlError("Please select a CSV file in the Upload and Analyze section first.");
+
       return;
+
     }
+
     if (!mlTarget.trim()) {
+
       setMlError("Enter the target column you want to predict (for example, price).");
+
       return;
+
     }
 
     setMlLoading(true);
+
     setMlError("");
+
     setMlRecommendations(null);
+
     setMlTrainingResults(null);
+
     setSelectedModels([]);
 
     try {
+
       const formData = new FormData();
+
       formData.append("file", selectedFile);
+
       formData.append("target_column", mlTarget.trim());
+
       formData.append("task", mlTask);
 
       const response = await fetch("http://localhost:5000/api/ml/recommend", {
+
         method: "POST",
+
         body: formData,
+
       });
+
       const data = await response.json();
+
       if (!response.ok) {
+
         throw new Error(data.message || "Could not recommend ML models.");
+
       }
+
       setMlRecommendations(data);
+
     } catch (error) {
+
       setMlError(error.message || "Could not connect to the ML service.");
+
     } finally {
+
       setMlLoading(false);
+
     }
+
   };
 
   // Train the models selected by the user.
+
   const handleMLTraining = async () => {
+
     if (!selectedFile) {
+
       setMlError("Please select a CSV file first.");
+
       return;
+
     }
+
     if (!mlTarget.trim()) {
+
       setMlError("Enter the target column you want to predict.");
+
       return;
+
     }
+
     if (selectedModels.length === 0) {
+
       setMlError("Select at least one model to train.");
+
       return;
+
     }
 
     setMlLoading(true);
+
     setMlError("");
+
     setMlTrainingResults(null);
 
     try {
+
       const formData = new FormData();
+
       formData.append("file", selectedFile);
+
       formData.append("target_column", mlTarget.trim());
+
       formData.append("task", mlTask);
+
       formData.append("selected_models", JSON.stringify(selectedModels));
 
       const response = await fetch("http://localhost:5000/api/ml/train", {
+
         method: "POST",
+
         body: formData,
+
       });
+
       const data = await response.json();
+
       if (!response.ok) {
+
         throw new Error(data.message || "Model training failed.");
+
       }
+
       setMlTrainingResults(data);
+
     } catch (error) {
+
       setMlError(error.message || "Could not connect to the ML service.");
+
     } finally {
+
       setMlLoading(false);
+
     }
+
   };
-
-
 
   const totalMissingValues =
 
@@ -363,8 +391,6 @@ function App() {
       0
 
     ) ?? 0;
-
-
 
   return (
 
@@ -378,8 +404,6 @@ function App() {
 
         </a>
 
-
-
         <nav>
 
           <a href="#dashboard">Dashboard</a>
@@ -389,6 +413,7 @@ function App() {
           <a href="#analysis">Analysis</a>
 
           <a href="#predictions">Predictions</a>
+
           <a href="#ml-training">Train Models</a>
 
           <a href="#about">About</a>
@@ -397,15 +422,11 @@ function App() {
 
       </header>
 
-
-
       <main>
 
         <section className="hero" id="home">
 
           <p className="tag">DATA • ANALYTICS • MACHINE LEARNING</p>
-
-
 
           <h1>
 
@@ -415,8 +436,6 @@ function App() {
 
           </h1>
 
-
-
           <p className="description">
 
             Upload a CSV dataset, understand its structure, explore numerical
@@ -424,8 +443,6 @@ function App() {
             statistics, and try a machine learning model through one platform.
 
           </p>
-
-
 
           <div className="hero-buttons">
 
@@ -445,8 +462,6 @@ function App() {
 
         </section>
 
-
-
         <section className="cards" id="dashboard">
 
           <div className="card">
@@ -465,8 +480,6 @@ function App() {
 
           </div>
 
-
-
           <div className="card">
 
             <div className="feature-icon">🔎</div>
@@ -482,8 +495,6 @@ function App() {
             </p>
 
           </div>
-
-
 
           <div className="card">
 
@@ -503,15 +514,11 @@ function App() {
 
         </section>
 
-
-
         <section className="about-section" id="about">
 
           <p className="tag">ABOUT THE PROJECT</p>
 
           <h2>One platform to explore data and experiment with ML</h2>
-
-
 
           <p className="about-description">
 
@@ -524,8 +531,6 @@ function App() {
             service.
 
           </p>
-
-
 
           <div className="about-grid">
 
@@ -543,8 +548,6 @@ function App() {
 
             </article>
 
-
-
             <article className="about-card">
 
               <h3>02. Analyze your data</h3>
@@ -560,8 +563,6 @@ function App() {
               </p>
 
             </article>
-
-
 
             <article className="about-card">
 
@@ -579,8 +580,6 @@ function App() {
 
           </div>
 
-
-
           <p className="about-note">
 
             The platform supports CSV analysis, house-price prediction, and a general ML workflow that recommends and trains models for uploaded datasets.
@@ -588,8 +587,6 @@ function App() {
           </p>
 
         </section>
-
-
 
         <section className="dataset-section" id="datasets">
 
@@ -602,8 +599,6 @@ function App() {
             Datasets currently returned by the backend.
 
           </p>
-
-
 
           {datasets.length === 0 ? (
 
@@ -641,8 +636,6 @@ function App() {
 
         </section>
 
-
-
         <section className="upload-section" id="analysis">
 
           <div className="section-heading">
@@ -661,8 +654,6 @@ function App() {
 
           </div>
 
-
-
           <form className="upload-form" onSubmit={handleFileUpload}>
 
             <label className="file-label" htmlFor="datasetFile">
@@ -670,8 +661,6 @@ function App() {
               Select a CSV file
 
             </label>
-
-
 
             <input
 
@@ -684,8 +673,6 @@ function App() {
               onChange={handleFileSelection}
 
             />
-
-
 
             {selectedFile && (
 
@@ -711,8 +698,6 @@ function App() {
 
             )}
 
-
-
             <button
 
               className="upload-button"
@@ -727,8 +712,6 @@ function App() {
 
             </button>
 
-
-
             {uploadError && (
 
               <div className="message error-message" role="alert">
@@ -740,8 +723,6 @@ function App() {
             )}
 
           </form>
-
-
 
           {datasetAnalysis && (
 
@@ -767,8 +748,6 @@ function App() {
 
               </div>
 
-
-
               <div className="summary-cards">
 
                 <div className="summary-card">
@@ -779,8 +758,6 @@ function App() {
 
                 </div>
 
-
-
                 <div className="summary-card">
 
                   <span>Total Columns</span>
@@ -789,8 +766,6 @@ function App() {
 
                 </div>
 
-
-
                 <div className="summary-card">
 
                   <span>Duplicate Rows</span>
@@ -798,8 +773,6 @@ function App() {
                   <strong>{datasetAnalysis.duplicateRows}</strong>
 
                 </div>
-
-
 
                 <div className="summary-card">
 
@@ -811,11 +784,7 @@ function App() {
 
               </div>
 
-
-
               <h3 className="result-section-title">Column Details</h3>
-
-
 
               <div className="column-grid">
 
@@ -851,11 +820,7 @@ function App() {
 
               </div>
 
-
-
               <h3 className="result-section-title">Statistical Summary</h3>
-
-
 
               {Object.entries(datasetAnalysis.statistics || {}).length ===
 
@@ -941,137 +906,409 @@ function App() {
 
         </section>
 
-
-
         <section className="ml-training-section" id="ml-training">
+
           <div className="section-heading">
+
             <p className="tag">GENERAL MACHINE LEARNING</p>
+
             <h2>Train Your Own ML Models</h2>
+
             <p>
+
               Choose a CSV dataset and target column, get model recommendations,
+
               and train models to compare their performance.
+
             </p>
+
           </div>
 
           <div className="ml-training-card">
+
             <div className="ml-form-group">
+
               <label htmlFor="ml-target">Target column</label>
+
               <input
+
                 id="ml-target"
+
                 type="text"
+
                 value={mlTarget}
+
                 onChange={(event) => {
+
                   setMlTarget(event.target.value);
+
                   setMlRecommendations(null);
+
                   setMlTrainingResults(null);
+
                   setSelectedModels([]);
+
                 }}
+
                 placeholder="For example: price"
+
               />
+
               <small>The column contains the value you want the model to predict.</small>
+
             </div>
 
             <div className="ml-form-group">
+
               <label htmlFor="ml-task">Prediction type</label>
+
               <select
+
                 id="ml-task"
+
                 value={mlTask}
+
                 onChange={(event) => {
+
                   setMlTask(event.target.value);
+
                   setMlRecommendations(null);
+
                   setMlTrainingResults(null);
+
                   setSelectedModels([]);
+
                 }}
+
               >
+
                 <option value="auto">Detect automatically</option>
+
                 <option value="regression">Regression — predict a number</option>
+
                 <option value="classification">Classification — predict a category</option>
+
               </select>
+
             </div>
 
             <p className="ml-file-status">
+
               {selectedFile
+
                 ? `Selected CSV: ${selectedFile.name}`
+
                 : "First select a CSV file in the Upload and Analyze section above."}
+
             </p>
 
             <button
+
               type="button"
+
               className="ml-primary-button"
+
               onClick={handleMLRecommendation}
+
               disabled={mlLoading || !selectedFile}
+
             >
+
               {mlLoading ? "Working..." : "Recommend ML Models"}
+
             </button>
 
             {mlError && <p className="ml-error" role="alert">{mlError}</p>}
 
             {mlRecommendations && (
+
               <div className="ml-results">
+
                 <h3>Recommended models</h3>
+
                 <p>
+
                   Detected task:{" "}
+
                   <strong>{mlRecommendations.task || mlTask}</strong>
+
                 </p>
+
                 {(() => {
+
                   const models =
+
                     mlRecommendations.recommended_models ||
+
                     mlRecommendations.recommendations ||
+
                     mlRecommendations.models ||
+
                     [];
+
                   if (!Array.isArray(models) || models.length === 0) {
+
                     return (
+
                       <p>
+
                         The API responded, but the model list was not in the expected format.
+
                         Please check the response in the browser console.
+
                       </p>
+
                     );
+
                   }
+
                   return models.map((model, index) => {
+
                     const modelName =
+
                       typeof model === "string"
+
                         ? model
+
                         : model.name || model.model_name || model.model;
+
                     if (!modelName) return null;
+
                     return (
+
                       <label className="ml-model-option" key={`${modelName}-${index}`}>
+
                         <input
+
                           type="checkbox"
+
                           checked={selectedModels.includes(modelName)}
+
                           onChange={(event) => {
+
                             setSelectedModels((previous) =>
+
                               event.target.checked
+
                                 ? [...previous, modelName]
+
                                 : previous.filter((name) => name !== modelName)
+
                             );
+
                           }}
+
                         />
+
                         <span>{modelName}</span>
+
                       </label>
+
                     );
+
                   });
+
                 })()}
 
                 <button
+
                   type="button"
+
                   className="ml-primary-button"
+
                   onClick={handleMLTraining}
+
                   disabled={mlLoading || selectedModels.length === 0}
+
                 >
+
                   {mlLoading ? "Training..." : "Train Selected Models"}
+
                 </button>
+
               </div>
+
             )}
 
             {mlTrainingResults && (
               <div className="ml-results">
-                <h3>Model training results</h3>
-                <pre className="ml-json-results">
-                  {JSON.stringify(mlTrainingResults, null, 2)}
-                </pre>
+                <div className="ml-results-header">
+                  <span className="ml-success-label">✓ Training completed</span>
+                  <h3>Your ML analysis results</h3>
+                  <p>
+                    Here is a simple explanation of what your dataset and machine
+                    learning model have achieved.
+                  </p>
+                </div>
+
+                <div className="ml-summary-grid">
+                  <div className="ml-summary-card">
+                    <span>Usable records</span>
+                    <strong>{mlTrainingResults.total_valid_rows ?? "—"}</strong>
+                    <small>Records available for this training run</small>
+                  </div>
+                  <div className="ml-summary-card">
+                    <span>Used for learning</span>
+                    <strong>{mlTrainingResults.training_rows ?? "—"}</strong>
+                    <small>Records used to train the model</small>
+                  </div>
+                  <div className="ml-summary-card">
+                    <span>Used for testing</span>
+                    <strong>{mlTrainingResults.test_rows ?? "—"}</strong>
+                    <small>Records used to evaluate predictions</small>
+                  </div>
+                </div>
+
+                <div className="ml-explanation-card">
+                  <h4>What did the model learn to predict?</h4>
+                  <p>
+                    The target column is{" "}
+                    <strong>{mlTrainingResults.target || mlTarget || "your selected target"}</strong>.
+                    The model uses{" "}
+                    <strong>
+                      {(mlTrainingResults.features || []).join(", ") ||
+                        "the available input columns"}
+                    </strong>{" "}
+                    to make its predictions.
+                  </p>
+                  <p>
+                    {mlTrainingResults.task === "regression"
+                      ? "This is a regression task, which means the model predicts a numerical value, such as a price or sales amount."
+                      : mlTrainingResults.task === "classification"
+                      ? "This is a classification task, which means the model predicts a category or class, such as approved or rejected."
+                      : "The model learned patterns in your data to make predictions."}
+                  </p>
+                </div>
+
+                <div className="ml-model-card">
+                  <h4>Model trained</h4>
+                  <h3>
+                    {mlTrainingResults.selected_model ||
+                      (mlTrainingResults.user_selected_models || selectedModels).join(", ") ||
+                      "Selected machine learning model"}
+                  </h3>
+                  <p>
+                    {String(
+                      mlTrainingResults.selected_model ||
+                        (mlTrainingResults.user_selected_models || selectedModels)[0] ||
+                        ""
+                    ).includes("Linear Regression")
+                      ? "Linear Regression learns the relationship between input values and a numerical result."
+                      : String(
+                          mlTrainingResults.selected_model ||
+                            (mlTrainingResults.user_selected_models || selectedModels)[0] ||
+                            ""
+                        ).includes("Decision Tree")
+                      ? "A Decision Tree learns a series of decision rules from the data."
+                      : String(
+                          mlTrainingResults.selected_model ||
+                            (mlTrainingResults.user_selected_models || selectedModels)[0] ||
+                            ""
+                        ).includes("Random Forest")
+                      ? "A Random Forest combines multiple decision trees to make predictions."
+                      : "The selected model has been trained to identify patterns in your dataset."}
+                  </p>
+                </div>
+
+                <div className="ml-performance-section">
+                  <h4>How did the model perform?</h4>
+                  {Object.entries(mlTrainingResults.model_comparison || {}).length === 0 ? (
+                    <p>
+                      Training completed, but no performance metrics were returned.
+                    </p>
+                  ) : (
+                    Object.entries(mlTrainingResults.model_comparison || {}).map(
+                      ([modelName, metrics]) => (
+                        <div className="ml-performance-card" key={modelName}>
+                          <h5>{modelName}</h5>
+                          {mlTrainingResults.task === "regression" ? (
+                            <>
+                              {(metrics.test_mae ?? metrics.mae) != null && (
+                                <div className="ml-metric-row">
+                                  <span>Average absolute prediction error (MAE)</span>
+                                  <strong>
+                                    {Number(metrics.test_mae ?? metrics.mae).toFixed(2)}
+                                  </strong>
+                                </div>
+                              )}
+                              {(metrics.test_rmse ?? metrics.rmse) != null && (
+                                <div className="ml-metric-row">
+                                  <span>Prediction error score (RMSE)</span>
+                                  <strong>
+                                    {Number(metrics.test_rmse ?? metrics.rmse).toFixed(2)}
+                                  </strong>
+                                </div>
+                              )}
+                              {(metrics.test_r2 ?? metrics.r2) != null && (
+                                <div className="ml-metric-row">
+                                  <span>R² score (higher is generally better)</span>
+                                  <strong>
+                                    {Number(metrics.test_r2 ?? metrics.r2).toFixed(3)}
+                                  </strong>
+                                </div>
+                              )}
+                              <p className="ml-metric-help">
+                                MAE and RMSE describe prediction error in the target column's units; lower is generally better. R² indicates how well the model fits the test data, but it does not guarantee future performance.
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              {(metrics.test_accuracy ?? metrics.accuracy) != null && (
+                                <div className="ml-metric-row">
+                                  <span>Correct predictions (accuracy)</span>
+                                  <strong>
+                                    {(Number(metrics.test_accuracy ?? metrics.accuracy) * 100).toFixed(1)}%
+                                  </strong>
+                                </div>
+                              )}
+                              {(metrics.test_f1 ?? metrics.f1) != null && (
+                                <div className="ml-metric-row">
+                                  <span>F1 score</span>
+                                  <strong>
+                                    {Number(metrics.test_f1 ?? metrics.f1).toFixed(3)}
+                                  </strong>
+                                </div>
+                              )}
+                              <p className="ml-metric-help">
+                                These scores summarize performance on the test records. Results may differ on new data.
+                              </p>
+                            </>
+                          )}
+                        </div>
+                      )
+                    )
+                  )}
+                </div>
+
+                {Number(mlTrainingResults.test_rows) < 20 && (
+                  <div className="ml-caution">
+                    <strong>Keep in mind: the test set is small</strong>
+                    <p>
+                      This model was tested on only {mlTrainingResults.test_rows ?? 0} records.
+                      That is a very small test set, so the scores may change considerably
+                      when the model sees new data. A larger dataset can provide a more
+                      reliable evaluation.
+                    </p>
+                  </div>
+                )}
+
+                {mlTrainingResults.note && (
+                  <p className="ml-metric-help ml-result-note">
+                    {mlTrainingResults.note}
+                  </p>
+                )}
+
+                <details className="ml-technical-details">
+                  <summary>View technical details (raw response)</summary>
+                  <pre className="ml-json-results">
+                    {JSON.stringify(mlTrainingResults, null, 2)}
+                  </pre>
+                </details>
               </div>
             )}
+
           </div>
+
         </section>
 
         <section className="prediction-section" id="predictions">
@@ -1087,8 +1324,6 @@ function App() {
             house-price model.
 
           </p>
-
-
 
           <form className="prediction-form" onSubmit={handlePrediction}>
 
@@ -1118,8 +1353,6 @@ function App() {
 
             </div>
 
-
-
             <div className="input-group">
 
               <label htmlFor="bedrooms">Number of Bedrooms</label>
@@ -1146,8 +1379,6 @@ function App() {
 
             </div>
 
-
-
             <button type="submit" disabled={loading}>
 
               {loading ? "Predicting..." : "Predict Price"}
@@ -1155,8 +1386,6 @@ function App() {
             </button>
 
           </form>
-
-
 
           {predictionError && (
 
@@ -1167,8 +1396,6 @@ function App() {
             </div>
 
           )}
-
-
 
           {prediction && (
 
@@ -1200,8 +1427,6 @@ function App() {
 
         </section>
 
-
-
         <section className="status-section">
 
           <h2>Platform Components</h2>
@@ -1211,8 +1436,6 @@ function App() {
             The application uses these components in its full-stack workflow.
 
           </p>
-
-
 
           <div className="status">
 
@@ -1250,8 +1473,6 @@ function App() {
 
       </main>
 
-
-
       <footer className="footer">
 
         <p>ML Intelligence Platform · Data Analysis & Machine Learning</p>
@@ -1263,7 +1484,5 @@ function App() {
   );
 
 }
-
-
 
 export default App;

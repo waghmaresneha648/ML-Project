@@ -704,3 +704,180 @@ button:disabled {
     font-size: 25px;
   }
 }
+/* ML training results dashboard — append these styles to the bottom of App.css */
+.ml-results {
+  margin-top: 24px;
+  color: var(--text-color, #243047);
+}
+
+.ml-results-header {
+  margin-bottom: 22px;
+}
+
+.ml-results-header h3 {
+  margin: 12px 0 8px;
+  font-size: 25px;
+}
+
+.ml-results-header p,
+.ml-explanation-card p,
+.ml-model-card p,
+.ml-metric-help {
+  line-height: 1.7;
+  color: var(--muted-text, #64748b);
+}
+
+.ml-success-label {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: #e7f7ed;
+  color: #176b38;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ml-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.ml-summary-card,
+.ml-explanation-card,
+.ml-model-card,
+.ml-performance-card {
+  padding: 20px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 14px;
+  background: var(--card-background, #fff);
+}
+
+.ml-summary-card span,
+.ml-summary-card small {
+  display: block;
+  color: var(--muted-text, #64748b);
+}
+
+.ml-summary-card strong {
+  display: block;
+  margin: 10px 0 6px;
+  font-size: 30px;
+}
+
+.ml-summary-card small {
+  line-height: 1.5;
+}
+
+.ml-explanation-card,
+.ml-model-card,
+.ml-performance-section {
+  margin-bottom: 20px;
+}
+
+.ml-explanation-card h4,
+.ml-model-card h4,
+.ml-performance-section h4 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.ml-model-card h3 {
+  margin: 8px 0;
+  font-size: 22px;
+}
+
+.ml-performance-card {
+  margin-bottom: 12px;
+}
+
+.ml-performance-card h5 {
+  margin: 0 0 16px;
+  font-size: 16px;
+}
+
+.ml-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+
+.ml-metric-row span {
+  line-height: 1.5;
+  color: var(--muted-text, #64748b);
+}
+
+.ml-metric-row strong {
+  flex-shrink: 0;
+}
+
+.ml-metric-help {
+  margin-bottom: 0;
+  font-size: 13px;
+}
+
+.ml-caution {
+  padding: 18px;
+  margin-bottom: 20px;
+  border: 1px solid #f0d49b;
+  border-radius: 12px;
+  background: #fff8e8;
+  color: #704b0b;
+}
+
+.ml-caution p {
+  margin-bottom: 0;
+  line-height: 1.7;
+}
+
+.ml-result-note {
+  margin: 16px 0;
+}
+
+.ml-technical-details {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+}
+
+.ml-technical-details summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.ml-json-results {
+  margin-top: 16px;
+  padding: 16px;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #1e293b;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 650px) {
+  .ml-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ml-summary-card {
+    padding: 16px;
+  }
+
+  .ml-results-header h3 {
+    font-size: 22px;
+  }
+
+  .ml-metric-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
